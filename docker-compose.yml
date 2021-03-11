@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+       MYSQL_ROOT_PASSWORD: trawsgrifiwr
+       MYSQL_DATABASE: trawsgrifiwr
+       MYSQL_USER: root
+       MYSQL_PASSWORD: trawsgrifiwr
+
+  redis:
+    image: redis
+    volumes:
+      - redis_data:/data
+
+  web:
+    build: "./web"
+    entrypoint: ["supervisord","-c","service_script.conf"]
+    volumes:
+      - ./web/:/usr/src/app
+      - ./web/data:/usr/src/app/data
+    ports:
+      - "6543:6543"
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  redis_data: {}
+  db_data: {}
