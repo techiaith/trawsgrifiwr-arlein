@@ -3,6 +3,8 @@ default: build
 init:
 	docker-compose exec web bash init.sh
 	docker-compose restart
+	docker-compose exec web bash init_db.sh
+	docker-compose restart
 
 build:
 	docker-compose build
