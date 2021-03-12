@@ -1,5 +1,6 @@
 web/supervisor.pid
 web/supervisor.log
+web/app/transcriber/models
 *.pyc
 .DS_Store
 *.pem

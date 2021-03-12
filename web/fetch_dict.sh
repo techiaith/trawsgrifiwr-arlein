@@ -9,5 +9,5 @@ if [[ RELEASE == "" ]]; then
   exit 0
 fi
 echo "fetching language models"
-wget https://github.com/techiaith/docker-deepspeech-cy/releases/download/$RELEASE/techiaith_bangor_$RELEASE.pbmm -o app/transcriber/models/lm.pbmm
+wget https://github.com/techiaith/docker-deepspeech-cy/releases/download/$RELEASE/techiaith_bangor_$RELEASE.pbmm -o app/transcriber/models/am.pbmm
 wget https://github.com/techiaith/docker-deepspeech-cy/releases/download/$RELEASE/techiaith_bangor_transcribe_$RELEASE.scorer -o app/transcriber/models/lm.scorer

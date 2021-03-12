@@ -28,4 +28,4 @@ migrate:
 	docker-compose exec web bash migrate.sh
 
 update-dict:
-	docker-compose exec web bash fetch_dict.sh
+	docker-compose exec web bash fetch_dict.sh $(@1)
