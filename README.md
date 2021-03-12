@@ -1,19 +1,27 @@
-# Trawsgrifiwr Techiaith
+# Trawsgrifiwr Ar-lein
 
-Gwefean yn lapio wasanaethau'r Trawsgrifiwr DeepSpeech i fewn i UI ar gyfer creu is-deitlo ar gyfer fidios a sain chymraeg.
+Dyma'r cod tu cefn i wefan Trawsgrifiwr Ar-lein Uned Technolegau Iaith, Prifysgol Bangor (https://trawsgrifiwr.techiaith.cymru) sy'n hwyluso creu is-deitlau ar gyfer ffeiliau sain a fideos cyfrwng Cymraeg.
 
-## Gosod
+*This repository contains the code behind Bangor University Language Technology Unit's 'Trawsgrifiwr Ar-lein' website which uses Welsh speech recognition to make creating subtitles for Welsh medium audio files and videos easier.
 
-git clone https://git.techiaith.bangor.ac.uk/lleferydd/trawsgrifiwr-arlein/gwefan.git
+Defnyddiwch y camau canlynol i'w osod ar gyfrifiadur eich hunain: **D.S.** mae angen Docker wedi ei osod yn barod. Gweler (https://docs.docker.com/get-docker/)
 
-cd gwefan
+*Use the following steps to install on your own computer. **N.B.** you will need Docker installed on your machine. See (https://docs.docker.com/get-docker/)*
 
-make build
+## Gosod / *Install*
 
-make run
+` $ git clone https://github.com/techiaith/trawsgrifiwr-arlein.git`
 
-make init
+` $ cd trawsgrifiwr-arlein`
 
-## Defnyddio
+` $ make build`
 
-http://localhost:6543
+` $ make run`
+
+` $ make init`
+
+## Defnyddio / *Use*
+
+Ewch i http://localhost:6543 er mwyn dechrau defnyddio trawsgrifiwr eich hunain.
+
+*Go to http://localhost:6543 to start using your own transcription website*
