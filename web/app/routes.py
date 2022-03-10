@@ -1,0 +1,10 @@
+def includeme(config):
+    config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_route('home', '/')
+    config.add_route('upload', '/upload')
+    config.add_route('upload_recording', '/upload_recording')
+    config.add_route('export', '/export')
+    config.add_route('correct', '/correct')
+    config.add_route('player', '/player')
+    config.add_route('joinregion', '/joinregion')
+    config.add_route('revert', '/revert')

@@ -1,0 +1,5 @@
+web/supervisor.pid
+web/supervisor.log
+*.pyc
+.DS_Store
+*.pem
