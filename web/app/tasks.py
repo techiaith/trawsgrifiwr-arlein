@@ -27,11 +27,7 @@ def transcribe_audio(file_path):
     if ".wav" not in file_path:
         return
     uid = file_path.replace(".wav", "").replace("data/", "")
-    transcriber_model = transcribe.Transcriber(
-        '/usr/src/app/app/transcriber/models/techiaith/',
-        'techiaith/wav2vec2-xlsr-ft-cy', 
-        '22.01',
-        '/usr/src/app/app/transcriber/models/techiaith/')
+    transcriber_model = transcribe.Transcriber('techiaith/wav2vec2-xlsr-ft-cy', '22.06')
     temp_file_path = file_path.replace(".wav", "_temp.wav")
     cmd = "ffmpeg-normalize {} -ar 16000 -o {}".format(
         file_path, temp_file_path)

@@ -1,9 +1,8 @@
-FROM ubuntu:18.04
+FROM python:3.9
 
 RUN apt-get update -q --fix-missing
-RUN apt-get install -y -qq python python3 python3-pip python3-dev \
-    build-essential nano libssl-dev ffmpeg sox alsa-utils \
-    wget curl libmysqlclient-dev locales git
+RUN apt-get install -y -qq build-essential nano libssl-dev ffmpeg sox alsa-utils wget curl locales git \
+    libgirepository1.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-3.0
 
 # Set the locale
 RUN locale-gen cy_GB.UTF-8
@@ -29,4 +28,6 @@ RUN git clone --recursive https://github.com/parlance/ctcdecode.git \
     /tmp/ctcdecode
 WORKDIR /tmp/ctcdecode
 RUN pip3 install .
+
+
 WORKDIR /usr/src/app

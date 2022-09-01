@@ -3,3 +3,5 @@ web/supervisor.log
 *.pyc
 .DS_Store
 *.pem
+.idea
+web/app/transcriber/models/*

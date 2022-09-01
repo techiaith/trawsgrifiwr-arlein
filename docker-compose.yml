@@ -9,7 +9,7 @@ services:
     environment:
        MYSQL_ROOT_PASSWORD: trawsgrifiwr
        MYSQL_DATABASE: trawsgrifiwr
-       MYSQL_USER: root
+       MYSQL_USER: trawsgrifiwr
        MYSQL_PASSWORD: trawsgrifiwr
 
   redis:

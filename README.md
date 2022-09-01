@@ -1,20 +1,9 @@
-# Trawsgrifiwr Techiaith
+# Trawsgrifiwr Ar-lein
 
-Gwefean yn lapio wasanaethau'r Trawsgrifiwr DeepSpeech i fewn i UI ar gyfer creu is-deitlo ar gyfer fidios a sain chymraeg.
+### [Dogfennaeth Cymraeg](docs/CY.md)
 
-## Gosod
+### [English Documentation](docs/EN.md)
 
-git clone https://git.techiaith.bangor.ac.uk/lleferydd/trawsgrifiwr-arlein/gwefan.git
-
-cd gwefan
-
-make build
-
-make run
-
-make init
-
-## Defnyddio
-
-http://localhost:6543
-
+<img src="docs/images/llyw_logo.png" alt="Logo" align="left">
+<img src="docs/images/BU_logo.png" alt="Logo" align="right">
+<br><br><br><br><br><br><br><br><br>
