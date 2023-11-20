@@ -1,456 +1,497 @@
 {% extends "layout.html.j2" %}
 
 {% block content %}
-<div class="container">
-  <div class="row m-5 pt-5">
-    <div class="col-12">
-      <h2>Cywiro</h2>
-      <h4>{{uid}}</h4>
-    </div>
-    {% if doc.export_ready %}
-    <div class="col-12">
-      <div class="form-group-row">
-        <form action="/export" method="post">
-          <input type="hidden" name="uid" value="{{uid}}">
-          <input type="hidden" name="o_type" value="srt">
-          <button class="btn btn-secondary ml-lg-2 float-right" type="submit" title="SRT">
-            <i data-feather="download-cloud"></i> .srt
-          </button>
-        </form>
-        <form action="/export" method="post">
-          <input type="hidden" name="uid" value="{{uid}}">
-          <input type="hidden" name="o_type" value="TextGrid">
-          <button class="btn btn-secondary ml-lg-2 float-right" type="submit" title="TextGrid">
-            <i data-feather="download-cloud"></i> .TextGrid
-          </button>
-        </form>
-      </div>
-    </div>
-    {% endif %}
-    <div class="col-12 mt-5">
-      <div id="waveform"></div>
-      <div id="wave-timeline" class="bg-primary"></div>
-    </div>
-    {% if error %}
-    <div class="alert alert-danger fade in alert-dismissible show mt-5">
-      <button class="close" type="button" title="cau" data-dismiss="alert" aria-label="Close">
+    <div class="container">
+        <div class="row m-5 pt-5">
+            <div class="col-12">
+                <h2>Cywiro</h2>
+                <h4>{{ uid }}</h4>
+            </div>
+            {% if doc.export_ready %}
+                <div class="col-12">
+                    <div class="form-group-row">
+                        <form action="/export" method="post">
+                            <input type="hidden" name="uid" value="{{ uid }}">
+                            <input type="hidden" name="o_type" value="srt">
+                            <button class="btn btn-secondary ml-lg-2 float-right" type="submit" title="SRT">
+                                <i data-feather="download-cloud"></i> .srt
+                            </button>
+                        </form>
+                        <form action="/export" method="post">
+                            <input type="hidden" name="uid" value="{{ uid }}">
+                            <input type="hidden" name="o_type" value="TextGrid">
+                            <button class="btn btn-secondary ml-lg-2 float-right" type="submit" title="TextGrid">
+                                <i data-feather="download-cloud"></i> .TextGrid
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="col-12 mt-5">
+                <div id="waveform"></div>
+                <div id="wave-timeline" class="bg-primary"></div>
+            </div>
+            {% if error %}
+                <div class="alert alert-danger fade in alert-dismissible show mt-5">
+                    <button class="close" type="button" title="cau" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">
           ×
         </span>
-      </button>
-      <strong>
-        Rhybudd!
-      </strong>
-      {{ error }}
-    </div>
-    {% else %}
-    {% if doc.previous_transcript %}
-    <div class="mt-5 correct-box row align-items-end w-100">
-      <div class="col-lg-12">
-        <span class="align-middle"><strong>Segment:</strong> {{ doc.previous_transcript.correction_index }}: <em>{{ doc.previous_transcript.correction }}</em></span>
-      </div>
-    </div>
-    {% endif %}
-    <div class="mt-5 correct-box row align-items-end">
-      {% if doc.correcting_transcript %}
-      <div class="col-lg-9 col-md-12">
-        <div class="form-row mt-3">
-          <div class="form-group row">
-            <div class="col-6 col-md-6 mb-2 col-lg-2">
-              <span class="align-middle"><strong>Segment:</strong> {{ doc.correcting_transcript.correction_index }}</span>
-            </div>
-            <div class="col-6 col-md-6 mb-2 col-lg-3">
+                    </button>
+                    <strong>
+                        Rhybudd!
+                    </strong>
+                    {{ error }}
+                </div>
+            {% else %}
+                {% if doc.previous_transcript %}
+                    <div class="mt-5 correct-box row align-items-end w-100">
+                        <div class="col-lg-12">
+                            <span class="align-middle"><strong>Segment:</strong> {{ doc.previous_transcript.correction_index }}: <em>{{ doc.previous_transcript.correction }}</em></span>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="mt-5 correct-box row align-items-end">
+                    {% if doc.correcting_transcript %}
+                        <div class="col-lg-9 col-md-12">
+                            <div class="form-row mt-3">
+                                <div class="form-group row">
+                                    <div class="col-6 col-md-6 mb-2 col-lg-2">
+                                        <span class="align-middle"><strong>Segment:</strong> {{ doc.correcting_transcript.correction_index }}</span>
+                                    </div>
+                                    <div class="col-6 col-md-6 mb-2 col-lg-3">
               <span class="align-top">
                 <!-- <button type="button" name="button" title="Ailddechrau" class="btn btn-default m-0 p-0" id="{{ doc.correcting_transcript.correction_index }}">  <i data-feather="repeat"></i> </button> -->
-                <button type="button" name="button" title="Cychwyn o'r ddechrau" class="btn btn-default region-play m-0 p-0" id="{{ doc.correcting_transcript.correction_index }}"> <i data-feather="play" id="play-loop"></i> </button>
-                <button type="button" name="button" title="Oedi" class="btn btn-default region-pause m-0 p-0" id="{{ doc.correcting_transcript.correction_index }}"> <i data-feather="pause"></i> </button>
-                <button type="button" name="button" title="Chwarea" class="btn btn-default region-un-pause m-0 p-0" id="{{ doc.correcting_transcript.correction_index }}"> <i data-feather="play"></i> </button>
-                <button type="button" name="button" title="Chwyddo mewn" class="btn btn-default region-zoom-in m-0 p-0" id="{{ doc.correcting_transcript.correction_index }}"> <i data-feather="zoom-in"></i> </button>
-                <button type="button" name="button" title="Chwyddo allan" class="btn btn-default region-zoom-out m-0 p-0" id="{{ doc.correcting_transcript.correction_index }}"> <i data-feather="zoom-out"></i> </button>
+                <button type="button" name="button" title="Cychwyn o'r ddechrau"
+                        class="btn btn-default region-play m-0 p-0"
+                        id="{{ doc.correcting_transcript.correction_index }}"> <i data-feather="play"
+                                                                                  id="play-loop"></i> </button>
+                <button type="button" name="button" title="Oedi" class="btn btn-default region-pause m-0 p-0"
+                        id="{{ doc.correcting_transcript.correction_index }}"> <i
+                        data-feather="pause"></i> </button>
+                <button type="button" name="button" title="Chwarea" class="btn btn-default region-un-pause m-0 p-0"
+                        id="{{ doc.correcting_transcript.correction_index }}"> <i
+                        data-feather="play"></i> </button>
+                <button type="button" name="button" title="Chwyddo mewn"
+                        class="btn btn-default region-zoom-in m-0 p-0"
+                        id="{{ doc.correcting_transcript.correction_index }}"> <i
+                        data-feather="zoom-in"></i> </button>
+                <button type="button" name="button" title="Chwyddo allan"
+                        class="btn btn-default region-zoom-out m-0 p-0"
+                        id="{{ doc.correcting_transcript.correction_index }}"> <i
+                        data-feather="zoom-out"></i> </button>
               </span>
-            </div>
-            <div class="col-6 col-md-6 mb-2 col-lg-2">
-              <span class="align-middle"><strong>Dechrau:</strong> <span id="dechrau">{{ doc.correcting_transcript.start_time }}</span>e</span>
-            </div>
-            <div class="col-6 col-md-6 mb-2 col-lg-2">
-              <span class="align-middle"><strong>Diwedd:</strong> <span id="diwedd">{{ doc.correcting_transcript.end_time }}</span>e</span>
-            </div>
-            <div class="col-6 col-md-6 mb-2 col-lg-2">
-              <span class="align-middle"><strong>WER:</strong> {{ "{:.2f}".format(doc.correcting_transcript.wer) }}%</span>
-            </div>
-            <div class="col-lg-12">
-              <span class="align-middle"><strong>Awgrym:</strong> <em>{{ doc.correcting_transcript.candidate }}</em></span>
-            </div>
-            <div class="col-lg-12">
-              <span class="align-middle"><strong>Cywiriad:</strong> <em>{% if doc.correcting_transcript.candidate != doc.correcting_transcript.correction %}"{{ doc.correcting_transcript.correction}}"{% endif %}</em></span>
-            </div>
-            <div class="col-lg-12">
-              <textarea class="form-control" id="corrected-block" aria-label="Notes" rows="5">{{ doc.correcting_transcript.correction }}</textarea>
-            </div>
-          </div>
+                                    </div>
+                                    <div class="col-6 col-md-6 mb-2 col-lg-2">
+                                        <span class="align-middle"><strong>Dechrau:</strong> <span
+                                                id="dechrau">{{ doc.correcting_transcript.start_time }}</span>e</span>
+                                    </div>
+                                    <div class="col-6 col-md-6 mb-2 col-lg-2">
+                                        <span class="align-middle"><strong>Diwedd:</strong> <span
+                                                id="diwedd">{{ doc.correcting_transcript.end_time }}</span>e</span>
+                                    </div>
+                                    <div class="col-6 col-md-6 mb-2 col-lg-2">
+                                        <span class="align-middle"><strong>WER:</strong> {{ "{:.2f}".format(doc.correcting_transcript.wer) }}%</span>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <span class="align-middle"><strong>Awgrym:</strong> <em>{{ doc.correcting_transcript.candidate }}</em></span>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <span class="align-middle"><strong>Cywiriad:</strong> <em>{% if doc.correcting_transcript.candidate != doc.correcting_transcript.correction %}
+                                            "{{ doc.correcting_transcript.correction }}"{% endif %}</em></span>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <textarea class="form-control" id="corrected-block" aria-label="Notes"
+                                                  rows="5">{{ doc.correcting_transcript.correction }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-12 mt-2 mb-2 mt-lg-1 pr-4">
+                            <div class="row float-right">
+                                <div class="col-12">
+                                    Diweddaru dogfen
+                                </div>
+                                <div class="col-12">
+                                    <form action="/revert" method="post" id="revert-form">
+                                        <input type="hidden" name="uid" value="{{ uid }}">
+                                    </form>
+                                    <button class="btn btn-block btn-info float-right mb-2"
+                                            title="Ailddechrau trawsgrifio"
+                                            onclick="$('#confirmReset').modal({show:true});" type="button">
+                                        <i data-feather="file-text"></i> <i data-feather="corner-up-left"></i>
+                                    </button>
+                                </div>
+                                <div class="col-12">
+                                    <form action="/joinregion" method="post" id="merge-form"
+                                          onsubmit="checkForChanges(event);">
+                                        <input type="hidden" name="uid" value="{{ uid }}">
+                                        <input type="hidden" name="append" value="{{ doc.correction_index }}">
+                                    </form>
+                                    <button class="btn btn-block btn-outline-light float-right mb-2"
+                                            title="Gludo i'r nesaf" type="button"
+                                            onclick="$('#glueModal').modal({show:true});">
+                                        <i data-feather="plus"></i> <i data-feather="chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-block btn-primary float-right mb-2"
+                                            title="Cadw'r cywiriad" type="button" id="cywiro">
+                                        <i data-feather="check"></i> <i data-feather="save"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row float-right">
+                                <div class="col-12">
+                                    Llywio segmentau
+                                </div>
+                                <div class="col-4">
+                                    <form action="/correct" method="post" id="corrected-next"
+                                          onsubmit="checkForChanges(event);">
+                                        <input type="hidden" name="uid" value="{{ uid }}">
+                                        <input type="hidden" name="next" value="-2">
+                                        <button class="btn btn-block btn-sm btn-secondary mt-lg-2 float-right ml-2"
+                                                type="submit" title="Segment 1">
+                                            <i data-feather="rewind"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-4">
+                                    <form action="/correct" method="post" id="corrected-next"
+                                          onsubmit="checkForChanges(event);">
+                                        <input type="hidden" name="uid" value="{{ uid }}">
+                                        <input type="hidden" name="next" value="-1">
+                                        <button class="btn btn-block btn-sm btn-secondary mt-lg-2 float-right ml-2"
+                                                type="submit" title="Blaenorol">
+                                            <i data-feather="chevron-left"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-4">
+                                    <form action="/correct" method="post" id="corrected-pre"
+                                          onsubmit="checkForChanges(event);">
+                                        <input type="hidden" name="uid" value="{{ uid }}">
+                                        <input type="hidden" name="next" value="1">
+                                        <button class="btn btn-block btn-sm btn-secondary mt-lg-2 float-right ml-2"
+                                                type="submit" title="Nesaf">
+                                            <i data-feather="chevron-right"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if doc.next_transcript %}
+                    <div class="mt-5 correct-box row align-items-end w-100">
+                        <div class="col-lg-12">
+                            <span class="align-middle"><strong>Segment:</strong> {{ doc.next_transcript.correction_index }}: <em>{{ doc.next_transcript.correction }}</em></span>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
-      </div>
-      <div class="col-lg-3 col-12 mt-2 mb-2 mt-lg-1 pr-4">
-        <div class="row float-right">
-          <div class="col-12">
-            Diweddaru dogfen
-          </div>
-          <div class="col-12">
-            <form action="/revert" method="post" id="revert-form">
-              <input type="hidden" name="uid" value="{{uid}}">
-            </form>
-            <button class="btn btn-block btn-info float-right mb-2" title="Ailddechrau trawsgrifio" onclick="$('#confirmReset').modal({show:true});" type="button">
-              <i data-feather="file-text"></i> <i data-feather="corner-up-left"></i>
-            </button>
-          </div>
-          <div class="col-12">
-            <form action="/joinregion" method="post" id="merge-form" onsubmit="checkForChanges(event);">
-              <input type="hidden" name="uid" value="{{uid}}">
-              <input type="hidden" name="append" value="{{doc.correction_index}}">
-            </form>
-            <button class="btn btn-block btn-outline-light float-right mb-2" title="Gludo i'r nesaf" type="button" onclick="$('#glueModal').modal({show:true});">
-              <i data-feather="plus"></i> <i data-feather="chevron-right"></i>
-            </button>
-          </div>
-          <div class="col-12">
-            <button class="btn btn-block btn-primary float-right mb-2" title="Cadw'r cywiriad" type="button" id="cywiro">
-              <i data-feather="check"></i> <i data-feather="save"></i>
-            </button>
-          </div>
-        </div>
-        <div class="row float-right">
-          <div class="col-12">
-            Llywio segmentau
-          </div>
-          <div class="col-4">
-            <form action="/correct" method="post" id="corrected-next" onsubmit="checkForChanges(event);">
-              <input type="hidden" name="uid" value="{{uid}}">
-              <input type="hidden" name="next" value="-2">
-              <button class="btn btn-block btn-sm btn-secondary mt-lg-2 float-right ml-2" type="submit" title="Segment 1">
-                <i data-feather="rewind"></i>
-              </button>
-            </form>
-          </div>
-          <div class="col-4">
-            <form action="/correct" method="post" id="corrected-next" onsubmit="checkForChanges(event);">
-              <input type="hidden" name="uid" value="{{uid}}">
-              <input type="hidden" name="next" value="-1">
-              <button class="btn btn-block btn-sm btn-secondary mt-lg-2 float-right ml-2" type="submit" title="Blaenorol">
-                <i data-feather="chevron-left"></i>
-              </button>
-            </form>
-          </div>
-          <div class="col-4">
-            <form action="/correct" method="post" id="corrected-pre" onsubmit="checkForChanges(event);">
-              <input type="hidden" name="uid" value="{{uid}}">
-              <input type="hidden" name="next" value="1">
-              <button class="btn btn-block btn-sm btn-secondary mt-lg-2 float-right ml-2" type="submit" title="Nesaf">
-                <i data-feather="chevron-right"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-      {% endif %}
     </div>
-    {% if doc.next_transcript %}
-    <div class="mt-5 correct-box row align-items-end w-100">
-      <div class="col-lg-12">
-        <span class="align-middle"><strong>Segment:</strong> {{ doc.next_transcript.correction_index }}: <em>{{ doc.next_transcript.correction }}</em></span>
-      </div>
-    </div>
+    {% if doc.correcting_transcript %}
+        <form action="/correct" method="post" id="corrected-from">
+            <input type="hidden" name="uid" value="{{ uid }}">
+            <input type="hidden" name="tid" value="{{ doc.correcting_transcript.id }}">
+            <input type="hidden" name="correction" value="" id="corrected">
+            <input type="hidden" name="start_time" value="{{ doc.correcting_transcript.start_time }}" id="start">
+            <input type="hidden" name="end_time" value="{{ doc.correcting_transcript.end_time }}" id="end">
+        </form>
     {% endif %}
-    {% endif %}
-  </div>
-</div>
-{% if doc.correcting_transcript %}
-<form action="/correct" method="post" id="corrected-from">
-  <input type="hidden" name="uid" value="{{uid}}">
-  <input type="hidden" name="tid" value="{{doc.correcting_transcript.id}}">
-  <input type="hidden" name="correction" value="" id="corrected">
-  <input type="hidden" name="start_time" value="{{doc.correcting_transcript.start_time}}" id="start">
-  <input type="hidden" name="end_time" value="{{doc.correcting_transcript.end_time}}" id="end">
-</form>
-{% endif %}
-<form action="/correct" method="post" id="wav-click" onsubmit="checkForChanges(event);">
-  <input type="hidden" name="uid" value="{{uid}}">
-  <input type="hidden" name="correction_index" value="" id="new-ci">
-</form>
-<div class="correct-padding">
-  &nbsp
-</div>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark">Amser annilys</h5>
-        <button type="button" title="cau" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body text-dark">
-        Sicrhewch fod y segmentau ddim yn gorgyffwrdd.
-      </div>
-      <div class="modal-footer">
-        <button type="button" title="cau" class="btn btn-secondary" data-dismiss="modal"> <i data-feather="x"></i> </button>
-      </div>
+    <form action="/correct" method="post" id="wav-click" onsubmit="checkForChanges(event);">
+        <input type="hidden" name="uid" value="{{ uid }}">
+        <input type="hidden" name="correction_index" value="" id="new-ci">
+    </form>
+    <div class="correct-padding">
+        &nbsp
     </div>
-  </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="changesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark">Cywiriad Heb ei Gadw</h5>
-        <button type="button" title="cau" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body text-dark">
-        Sicrhewch bod newidiadau wedi'u cadw cyn symud ymlaen.
-      </div>
-      <div class="modal-footer">
-        <button type="button" title="cau" class="btn btn-secondary" data-dismiss="modal"> <i data-feather="x"></i> </button>
-      </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">Amser annilys</h5>
+                    <button type="button" title="cau" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-dark">
+                    Sicrhewch fod y segmentau ddim yn gorgyffwrdd.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" title="cau" class="btn btn-secondary" data-dismiss="modal"><i
+                            data-feather="x"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="glueModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark">Rhybudd!</h5>
-        <button type="button" title="cau" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body text-dark">
-        Does ddim modd mynd yn ôl heb gychwyn o'r ddechrau ar ôl gludo.
-      </div>
-      <div class="modal-footer">
-        <button type="button" title="derbyn" class="btn btn-warning" onclick="submitMerge();"> <i data-feather="check"></i> </button>
-        <button type="button" title="cau" class="btn btn-secondary" data-dismiss="modal"> <i data-feather="x"></i> </button>
-      </div>
+    <!-- Modal -->
+    <div class="modal fade" id="changesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">Cywiriad Heb ei Gadw</h5>
+                    <button type="button" title="cau" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-dark">
+                    Sicrhewch bod newidiadau wedi'u cadw cyn symud ymlaen.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" title="cau" class="btn btn-secondary" data-dismiss="modal"><i
+                            data-feather="x"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="confirmReset" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark">Ailddechrau'r trawsgrifio?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body text-dark">
-        Cliciwch <i data-feather="check"></i> i ailddechrau'r holl drawsgrifio.  Byddwch y colli eich holl waith, hyd yn hyn!
-      </div>
-      <div class="modal-footer">
-        <button type="button" title="derbyn" class="btn btn-warning" onclick="submitRevert();"> <i data-feather="check"></i> </button>
-        <button type="button" title="cau" class="btn btn-secondary" data-dismiss="modal"> <i data-feather="x"></i> </button>
-      </div>
+    <!-- Modal -->
+    <div class="modal fade" id="glueModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">Rhybudd!</h5>
+                    <button type="button" title="cau" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-dark">
+                    Does ddim modd mynd yn ôl heb gychwyn o'r ddechrau ar ôl gludo.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" title="derbyn" class="btn btn-warning" onclick="submitMerge();"><i
+                            data-feather="check"></i></button>
+                    <button type="button" title="cau" class="btn btn-secondary" data-dismiss="modal"><i
+                            data-feather="x"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
+    <!-- Modal -->
+    <div class="modal fade" id="confirmReset" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">Ailddechrau'r trawsgrifio?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-dark">
+                    Cliciwch <i data-feather="check"></i> i ailddechrau'r holl drawsgrifio. Byddwch y colli eich
+                    holl waith, hyd yn hyn!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" title="derbyn" class="btn btn-warning" onclick="submitRevert();"><i
+                            data-feather="check"></i></button>
+                    <button type="button" title="cau" class="btn btn-secondary" data-dismiss="modal"><i
+                            data-feather="x"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 
 {% block scripts %}
-<script type="text/javascript">
-    $(function () {
-      $("#cywiro").click(function(){
-        $("#corrected").val($("#corrected-block").val());
-        $("#corrected-from").submit();
-      });
-      times = [];
-      {% if doc.correcting_transcript %}
-      {% for trans in doc.transcripts %}
-      {% if trans.correction_index != doc.correction_index %}
-        {% if trans.correction_index >= start_index %}
-          {% if trans.correction_index <= offset %}
-            times.push({
-                start: {{trans.start_time}},
-                end: {{trans.end_time}},
-                loop: false,
-                color: randomHsl(0.25, 25),
-                drag: false,
-                resize: false
+    <script type="text/javascript">
+        $(function () {
+            $("#cywiro").click(function () {
+                $("#corrected").val($("#corrected-block").val());
+                $("#corrected-from").submit();
             });
-          {% endif %}
-        {% endif %}
-      {% endif %}
-      {% endfor %}
-      times.push({
-          start: {{doc.correcting_transcript.start_time}},
-          end: {{doc.correcting_transcript.end_time}},
-          loop: false,
-          color: randomHsl(0.60, 90),
-          drag: false
-      });
-      {% endif %}
-      var wavesurfer = WaveSurfer.create({
-          container: document.querySelector('#waveform'),
-          waveColor: '#D9DCFF',
-          progressColor: '#797C9F',
-          cursorColor: '#4353FF',
-          responsive: true,
-          plugins: [
-              WaveSurfer.regions.create({
-                  regions: times,
-              }),
-              WaveSurfer.timeline.create({
-                  container: "#wave-timeline"
-              })
-          ]
-      });
-      {% if doc.correcting_transcript %}
-      wavesurfer.on('error', function(e) {
-          console.warn(e);
-      });
+            times = [];
+            {% if doc.correcting_transcript %}
+                {% for trans in doc.transcripts %}
+                    {% if trans.correction_index != doc.correction_index %}
+                        {% if trans.correction_index >= start_index %}
+                            {% if trans.correction_index <= offset %}
+                                times.push({
+                                    start: {{trans.start_time}},
+                                    end: {{trans.end_time}},
+                                    loop: false,
+                                    color: randomHsl(0.25, 25),
+                                    drag: false,
+                                    resize: false
+                                });
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                times.push({
+                    start: {{doc.correcting_transcript.start_time}},
+                    end: {{doc.correcting_transcript.end_time}},
+                    loop: false,
+                    color: randomHsl(0.60, 90),
+                    drag: false
+                });
+            {% endif %}
+            var wavesurfer = WaveSurfer.create({
+                container: document.querySelector('#waveform'),
+                backend: 'MediaElementWebAudio',
+                waveColor: '#D9DCFF',
+                progressColor: '#797C9F',
+                cursorColor: '#4353FF',
+                responsive: true,
+                plugins: [
+                    WaveSurfer.regions.create({
+                        regions: times,
+                    }),
+                    WaveSurfer.timeline.create({
+                        container: "#wave-timeline"
+                    })
+                ]
+            });
+            {% if doc.correcting_transcript %}
+                wavesurfer.on('error', function (e) {
+                    console.warn(e);
+                });
 
-      wavesurfer.on('audioprocess', function(e) {
-        var region = Object.values(wavesurfer.regions.list)[times.length-1];
-        current_time = wavesurfer.getCurrentTime();
-        if (current_time >= region.end) {
-          wavesurfer.pause();
-          $(".region-pause").hide();
-          $(".region-un-pause").show();
+                wavesurfer.on('audioprocess', function (e) {
+                    var region = Object.values(wavesurfer.regions.list)[times.length - 1];
+                    current_time = wavesurfer.getCurrentTime();
+                    if (current_time >= region.end) {
+                        wavesurfer.pause();
+                        $(".region-pause").hide();
+                        $(".region-un-pause").show();
+                    }
+                    if (current_time <= region.start) {
+                        region.play();
+                        $(".region-pause").show();
+                        $(".region-un-pause").hide();
+                    }
+                });
+
+                reset = []
+                wavesurfer.on('region-updated', function (e) {
+                    reset.push($("#dechrau").text());
+                    reset.push($("#diwedd").text());
+                    start = e.start.toFixed(2);
+                    end = e.end.toFixed(2);
+                    $("#dechrau").text(start);
+                    $("#diwedd").text(end);
+                });
+
+                wavesurfer.on('region-update-end', function (e) {
+                    start = e.start.toFixed(2);
+                    end = e.end.toFixed(2);
+                    $("#dechrau").text(start);
+                    $("#diwedd").text(end);
+                    for (var i = 0; i < times.length - 1; i++) {
+                        if ((start > times[i].start && start < times[i].end) ||
+                            (end > times[i].start && end < times[i].end) ||
+                            (end > {{doc.correcting_transcript.end_time}} && (end > times[i].end)) && (start < times[i].start) ||
+                            (start < {{doc.correcting_transcript.start_time}} && (start < times[i].start) && (end > times[i].end))
+                        ) {
+                            $('#myModal').modal({show: true});
+                            e.update({start: reset[0], end: reset[1]});
+                            $("#dechrau").text(reset[0]);
+                            $("#diwedd").text(reset[1]);
+                            reset = [];
+                            return;
+                        }
+                    }
+                    $("#start").val(start);
+                    $("#end").val(end);
+                });
+
+                wavesurfer.on('region-dblclick', function (e) {
+                    $("#new-ci").val(e.start);
+                    $("#wav-click").submit();
+                });
+
+                wavesurfer.on('ready', function (e) {
+                    var pos = {{ doc.correcting_transcript.start_time }} / wavesurfer.getDuration();
+                    wavesurfer.seekTo(pos);
+                    wavesurfer.zoom(20);
+                });
+            {% endif %}
+            wavesurfer.load('/player?uid={{uid}}');
+            $(".region-zoom-in").click(function () {
+                wavesurfer.zoom(20);
+            });
+            $(".region-zoom-out").click(function () {
+                wavesurfer.zoom(1);
+            });
+
+            $(".region-play").click(function () {
+                var id = $(this).attr('id');
+                var region = Object.values(wavesurfer.regions.list)[times.length - 1];
+                region.play();
+                $('#play-loop').replaceWith(feather.icons['repeat'].toSvg());
+                $(".region-pause").show();
+                $(".region-un-pause").hide();
+            });
+
+            $(".region-pause").click(function () {
+                var id = $(this).attr('id');
+                var region = Object.values(wavesurfer.regions.list)[times.length - 1];
+                wavesurfer.pause();
+                $(this).hide();
+                $(".region-un-pause").show();
+            });
+
+            $(".region-un-pause").click(function () {
+                var id = $(this).attr('id');
+                var region = Object.values(wavesurfer.regions.list)[times.length - 1];
+                current_time = wavesurfer.getCurrentTime();
+                if (current_time >= region.end) {
+                    region.play();
+                } else {
+                    wavesurfer.play();
+                }
+                $(this).hide();
+                $(".region-pause").show();
+            });
+            $(".region-un-pause").hide();
+        });
+
+        function submitMerge() {
+            $('#merge-form').submit();
         }
-        if (current_time <= region.start) {
-          region.play();
-          $(".region-pause").show();
-          $(".region-un-pause").hide();
+
+        function submitRevert() {
+            $('#revert-form').submit();
         }
-      });
 
-      reset = []
-      wavesurfer.on('region-updated', function(e) {
-        reset.push($("#dechrau").text());
-        reset.push($("#diwedd").text());
-        start = e.start.toFixed(2);
-        end = e.end.toFixed(2);
-        $("#dechrau").text(start);
-        $("#diwedd").text(end);
-      });
-
-      wavesurfer.on('region-update-end', function(e) {
-        start = e.start.toFixed(2);
-        end = e.end.toFixed(2);
-        $("#dechrau").text(start);
-        $("#diwedd").text(end);
-        for (var i = 0; i < times.length-1; i++) {
-          if ((start > times[i].start && start < times[i].end) ||
-            (end > times[i].start && end < times[i].end) ||
-            (end > {{doc.correcting_transcript.end_time}} && (end > times[i].end)) && (start < times[i].start) ||
-            (start < {{doc.correcting_transcript.start_time}} && (start < times[i].start) && (end > times[i].end))
-          ) {
-            $('#myModal').modal({show:true});
-            e.update({start: reset[0],end: reset[1]});
-            $("#dechrau").text(reset[0]);
-            $("#diwedd").text(reset[1]);
-            reset = [];
-            return;
-          }
+        function checkForChanges(event) {
+            event.preventDefault();
+            {% if doc.correcting_transcript %}
+                candidate = {% if doc.correcting_transcript.candidate != doc.correcting_transcript.correction %}"
+                    {{ doc.correcting_transcript.correction | safe}}"
+                    {% else %}"{{ doc.correcting_transcript.candidate | safe}}"{% endif %};
+                candidate = candidate.toLowerCase()
+                correction = $("#corrected-block").val().toLowerCase();
+                start_time = Number("{{ doc.correcting_transcript.start_time | safe}}");
+                start_time_c = Number($("#dechrau").text());
+                end_time = Number("{{ doc.correcting_transcript.end_time | safe}}");
+                end_time_c = Number($("#diwedd").text());
+                if (candidate != correction || start_time != start_time_c || end_time != end_time_c) {
+                    $('#changesModal').modal({show: true});
+                    return false
+                }
+                event.target.submit();
+            {% endif %}
+            return true
         }
-        $("#start").val(start);
-        $("#end").val(end);
-      });
 
-      wavesurfer.on('region-dblclick', function(e) {
-          $("#new-ci").val(e.start);
-          $("#wav-click").submit();
-      });
-
-      wavesurfer.on('ready', function(e) {
-        var pos = {{ doc.correcting_transcript.start_time }} / wavesurfer.getDuration();
-        wavesurfer.seekTo(pos);
-        wavesurfer.zoom(20);
-      });
-      {% endif %}
-
-      // Load audio from URL
-      wavesurfer.load('/player?uid={{uid}}');
-
-      $(".region-zoom-in").click(function(){
-        wavesurfer.zoom(20);
-      });
-      $(".region-zoom-out").click(function(){
-        wavesurfer.zoom(1);
-      });
-
-      $(".region-play").click(function(){
-        var id = $(this).attr('id');
-        var region = Object.values(wavesurfer.regions.list)[times.length-1];
-        region.play();
-        $('#play-loop').replaceWith(feather.icons['repeat'].toSvg());
-        $(".region-pause").show();
-        $(".region-un-pause").hide();
-      });
-
-      $(".region-pause").click(function(){
-        var id = $(this).attr('id');
-        var region = Object.values(wavesurfer.regions.list)[times.length-1];
-        wavesurfer.pause();
-        $(this).hide();
-        $(".region-un-pause").show();
-      });
-
-      $(".region-un-pause").click(function(){
-        var id = $(this).attr('id');
-        var region = Object.values(wavesurfer.regions.list)[times.length-1];
-        current_time = wavesurfer.getCurrentTime();
-        if (current_time >= region.end) {
-          region.play();
-        } else {
-          wavesurfer.play();
+        function randomHsl(op, intensity) {
+            return 'hsla(' + (Math.random() * 360) + ', ' + (intensity) + '%, 50%, ' + (op) + ')';
         }
-        $(this).hide();
-        $(".region-pause").show();
-      });
-      $(".region-un-pause").hide();
-    });
 
-    function submitMerge() {
-      $('#merge-form').submit();
-    }
+        function secondsFromHours(hms) {
+            var a = hms.split(':'); // split it at the colons
+            a[2] = a[2].replace(",", ".");
+            // minutes are worth 60 seconds. Hours are worth 60 minutes.
+            var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
 
-    function submitRevert() {
-      $('#revert-form').submit();
-    }
-
-    function checkForChanges(event) {
-      event.preventDefault();
-      {% if doc.correcting_transcript %}
-      candidate = {% if doc.correcting_transcript.candidate != doc.correcting_transcript.correction %}"{{ doc.correcting_transcript.correction | safe}}" {% else %}"{{ doc.correcting_transcript.candidate | safe}}"{% endif %};
-      candidate = candidate.toLowerCase()
-      correction = $("#corrected-block").val().toLowerCase();
-      start_time = Number("{{ doc.correcting_transcript.start_time | safe}}");
-      start_time_c = Number($("#dechrau").text());
-      end_time = Number("{{ doc.correcting_transcript.end_time | safe}}");
-      end_time_c = Number($("#diwedd").text());
-      if (candidate != correction || start_time != start_time_c || end_time != end_time_c) {
-        $('#changesModal').modal({show:true});
-        return false
-      }
-      event.target.submit();
-      {% endif %}
-      return true
-    }
-
-    function randomHsl(op, intensity) {
-      return 'hsla(' + (Math.random() * 360) + ', '+(intensity)+'%, 50%, '+(op)+')';
-    }
-    function secondsFromHours(hms) {
-      var a = hms.split(':'); // split it at the colons
-      a[2] = a[2].replace(",", ".");
-      // minutes are worth 60 seconds. Hours are worth 60 minutes.
-      var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
-
-      return seconds;
-    }
-</script>
+            return seconds;
+        }
+    </script>
 {% endblock scripts %}

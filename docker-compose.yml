@@ -3,7 +3,6 @@ version: "3"
 services:
   db:
     image: mysql:5.7
-    restart: always
     volumes:
       - db_data:/var/lib/mysql
     environment:
@@ -14,13 +13,11 @@ services:
 
   redis:
     image: redis
-    restart: always
     volumes:
       - redis_data:/data
 
   web:
     build: "./web"
-    restart: always
     entrypoint: ["supervisord","-c","service_script.conf"]
     volumes:
       - ./web/:/usr/src/app

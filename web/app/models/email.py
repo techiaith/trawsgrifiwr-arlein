@@ -5,10 +5,9 @@ from email.mime.multipart import MIMEMultipart
 
 
 def sendMail(config, receiver_email, subject, text, html):
-
     message = MIMEMultipart("alternative")
     message["Subject"] = subject
-    message["From"] = config['email.sender_email']
+    message["From"] = config["email.sender_email"]
     message["To"] = receiver_email
 
     # Turn these into plain/html MIMEText objects
@@ -22,10 +21,8 @@ def sendMail(config, receiver_email, subject, text, html):
 
     # Create secure connection with server and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(config['email.server'],
-                          465,
-                          context=context) as server:
-        server.login(config['email.sender_email'], config['email.password'])
+    with smtplib.SMTP_SSL(config["email.server"], 465, context=context) as server:
+        server.login(config["email.sender_email"], config["email.password"])
         server.sendmail(
-            config['email.sender_email'], receiver_email, message.as_string()
+            config["email.sender_email"], receiver_email, message.as_string()
         )

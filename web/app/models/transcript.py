@@ -25,9 +25,10 @@ class Transcript(Base):
     """
     Trawsgrifiad sy'n cynig rhan o dogfen llawn
     """
-    __tablename__ = 'transcript'
+
+    __tablename__ = "transcript"
     id = Column(Integer, primary_key=True)
-    document_id = Column(Integer, ForeignKey('document.id'))
+    document_id = Column(Integer, ForeignKey("document.id"))
     uuid = Column(Text, default="")
     start_time = Column(Float, default=0.0)
     end_time = Column(Float, default=0.0)
@@ -57,10 +58,9 @@ class Transcript(Base):
         """
 
     def __str__(self):
-        return "{} {} {} {}".format(self.confidence,
-                                    self.start_time,
-                                    self.end_time,
-                                    self.candidate)
+        return "{} {} {} {}".format(
+            self.confidence, self.start_time, self.end_time, self.candidate
+        )
 
     def __init__(self, start_time, end_time, candidate, correction_index, confidence):
         """
@@ -77,7 +77,7 @@ class Transcript(Base):
 def cleanWord(word):
     push = False
     new_word = ""
-    last_ch = ''
+    last_ch = ""
     for ch in word:
         if ch == "[":
             push = True
@@ -91,8 +91,7 @@ def cleanWord(word):
         if ch == "]":
             push = False
     new_word = new_word.lower()
-    new_word = new_word.translate(
-        new_word.maketrans("", "", string.punctuation))
+    new_word = new_word.translate(new_word.maketrans("", "", string.punctuation))
     new_word = new_word.strip(" ")
     return new_word
 

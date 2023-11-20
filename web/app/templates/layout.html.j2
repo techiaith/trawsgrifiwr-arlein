@@ -1,76 +1,81 @@
 <script>window.demoVersion = '2017.08.31';</script>
 <!DOCTYPE html>
-<html lang="{{request.locale_name}}">
-  <head>
+<html lang="{{ request.locale_name }}">
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Trawsgrifiwr Ar-lein</title>
-    <link rel="stylesheet" href="{{request.static_url('app:static/css/dalton.css')}}">
-    <link rel="stylesheet" href="{{request.static_url('app:static/css/dropzone.css')}}">
-    <link rel="stylesheet" href="{{request.static_url('app:static/css/basic.css')}}">
+    <link rel="stylesheet" href="{{ request.static_url('app:static/css/dalton.css') }}">
+    <link rel="stylesheet" href="{{ request.static_url('app:static/css/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ request.static_url('app:static/css/basic.css') }}">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{request.static_url('app:static/js/dropzone.js')}}"></script>
+    <script src="{{ request.static_url('app:static/js/dropzone.js') }}"></script>
     <!-- <script src="{{request.static_url('app:static/js/test.js')}}"></script> -->
-    <link rel="shortcut icon" href="{{request.static_url('app:static/pyramid-16x16.png')}}">
-    <script src="https://unpkg.com/wavesurfer.js/dist/wavesurfer.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
+    <link rel="shortcut icon" href="{{ request.static_url('app:static/pyramid-16x16.png') }}">
+    <script src="https://unpkg.com/wavesurfer.js@6.6.4"></script>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.4/dist/plugin/wavesurfer.timeline.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.4/dist/plugin/wavesurfer.regions.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@6.6.4/dist/plugin/wavesurfer.minimap.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.WebRTC-Experiment.com/MediaStreamRecorder.js"></script>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  </head>
-  <body>
-    <div id="wrapper">
-      <div class="d-flex flex-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm" id="naver">
+</head>
+<body>
+<div id="wrapper">
+    <div class="d-flex flex-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm" id="naver">
         <a href="/" class="text-info no-hover">
-          <img class="m-2" src="{{request.static_url('app:static/images/pyramid-16x16-purple.png')}}" alt="" width="24" height="24">
+            <img class="m-2" src="{{ request.static_url('app:static/images/pyramid-16x16-purple.png') }}" alt=""
+                 width="24" height="24">
         </a>
         <h3 class="my-0 mr-auto font-weight-normal text-info brand-logo-wrap">
-          <a href="/" class="text-info no-hover"><strong>Trawsgrifiwr</strong> <span>All-lein</span></a>
+            <a href="/" class="text-info no-hover"><strong>Trawsgrifiwr</strong> <span>Ar-lein</span></a>
         </h3>
 
-        <a class="text-primary mr-2" href="https://techiaith.bangor.ac.uk" ><img class="img-fluid" src="{{request.static_url('app:static/images/cropped-logo_uti.png')}}" id="ut_logo"></a>
-      </div>
-      {% block content %}
-        <p>No content</p>
-      {% endblock content %}
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+        <a class="text-primary mr-2" href="https://techiaith.bangor.ac.uk"><img class="img-fluid"
+                                                                                src="{{ request.static_url('app:static/images/cropped-logo_uti.png') }}"
+                                                                                id="ut_logo"></a>
     </div>
-    <nav class="navbar navbar-dark fixed-bottom bg-info" id="footer">
-      <div class="nav-brand">
-        <img class="img-responsive" src="{{request.static_url('app:static/images/logo_llyw.png')}}" id="ll_logo">
-      </div>
-      <span class="align-center">
-        <img class="img-responsive mt-1" src="{{request.static_url('app:static/images/B2_WHITE.png')}}" id="bu_logo">
+    {% block content %}
+        <p>No content</p>
+    {% endblock content %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
+<nav class="navbar navbar-dark fixed-bottom bg-info" id="footer">
+    <div class="nav-brand">
+        <img class="img-responsive" src="{{ request.static_url('app:static/images/logo_llyw.png') }}" id="ll_logo">
+    </div>
+    <span class="align-center">
+        <img class="img-responsive mt-1" src="{{ request.static_url('app:static/images/B2_WHITE.png') }}"
+             id="bu_logo">
       </span>
-      <span class="navbar-text">
-        <img class="mb-2" src="{{request.static_url('app:static/images/pyramid-16x16-light.png')}}" alt="" width="14" height="14">
+    <span class="navbar-text">
+        <img class="mb-2" src="{{ request.static_url('app:static/images/pyramid-16x16-light.png') }}" alt=""
+             width="14" height="14">
         <span><strong>Trawsgrifiwr Ar-lein</strong> <br>© <span id="cc-year" class="mb-3"></span> Prifysgol Bangor</span> <br>
         <small>Rhai eiconau gan <a class="text-muted" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></small>
       </span>
-    </nav>
-    <script type="text/javascript">
-      // Shorthand for $( document ).ready()
-      $(function() {
+</nav>
+<script type="text/javascript">
+    // Shorthand for $( document ).ready()
+    $(function () {
         feather.replace();
         $("#cc-year").append(new Date().getFullYear());
-      });
-    </script>
-    {% block scripts %}
+    });
+</script>
+{% block scripts %}
 
-    {% endblock scripts %}
-	</body>
+{% endblock scripts %}
+</body>
 </html>

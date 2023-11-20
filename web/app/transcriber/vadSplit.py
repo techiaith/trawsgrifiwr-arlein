@@ -2,7 +2,7 @@ import collections
 import contextlib
 import wave
 
-AudioFormat = collections.namedtuple('AudioFormat', 'rate channels width')
+AudioFormat = collections.namedtuple("AudioFormat", "rate channels width")
 
 DEFAULT_RATE = 16000
 DEFAULT_CHANNELS = 1
@@ -11,7 +11,6 @@ DEFAULT_FORMAT = AudioFormat(DEFAULT_RATE, DEFAULT_CHANNELS, DEFAULT_WIDTH)
 
 
 class AudioFile:
-
     def __init__(self, audio_path, as_path=False, audio_format=DEFAULT_FORMAT):
         self.audio_path = audio_path
         self.audio_format = audio_format
@@ -20,8 +19,8 @@ class AudioFile:
         self.tmp_file_path = None
 
     def __enter__(self):
-        if self.audio_path.endswith('.wav'):
-            self.open_file = wave.open(self.audio_path, 'r')
+        if self.audio_path.endswith(".wav"):
+            self.open_file = wave.open(self.audio_path, "r")
             if read_audio_format_from_wav_file(self.open_file) == self.audio_format:
                 if self.as_path:
                     self.open_file.close()
@@ -37,7 +36,9 @@ class AudioFile:
 
 
 def read_audio_format_from_wav_file(wav_file):
-    return AudioFormat(wav_file.getframerate(), wav_file.getnchannels(), wav_file.getsampwidth())
+    return AudioFormat(
+        wav_file.getframerate(), wav_file.getnchannels(), wav_file.getsampwidth()
+    )
 
 
 def get_num_samples(pcm_buffer_size, audio_format=DEFAULT_FORMAT):
@@ -55,40 +56,52 @@ def read_frames(wav_file, frame_duration_ms=30, yield_remainder=False):
     while True:
         try:
             data = wav_file.readframes(frame_size)
-            if not yield_remainder and get_pcm_duration(len(data), audio_format) * 1000 < frame_duration_ms:
+            if (
+                not yield_remainder
+                and get_pcm_duration(len(data), audio_format) * 1000 < frame_duration_ms
+            ):
                 break
             yield data
         except EOFError:
             break
 
 
-def read_frames_from_file(audio_path, audio_format=DEFAULT_FORMAT, frame_duration_ms=30, yield_remainder=False):
+def read_frames_from_file(
+    audio_path, audio_format=DEFAULT_FORMAT, frame_duration_ms=30, yield_remainder=False
+):
     with AudioFile(audio_path, audio_format=audio_format) as wav_file:
-        for frame in read_frames(wav_file, frame_duration_ms=frame_duration_ms, yield_remainder=yield_remainder):
+        for frame in read_frames(
+            wav_file,
+            frame_duration_ms=frame_duration_ms,
+            yield_remainder=yield_remainder,
+        ):
             yield frame
 
 
-def split(audio_frames,
-          audio_format=DEFAULT_FORMAT,
-          num_padding_frames=10,
-          threshold=0.1,
-          aggressiveness=3):
-
+def split(
+    audio_frames,
+    audio_format=DEFAULT_FORMAT,
+    num_padding_frames=10,
+    threshold=0.1,
+    aggressiveness=3,
+):
     from webrtcvad import Vad  # pylint: disable=import-outside-toplevel
 
     if audio_format.channels != 1:
-        raise ValueError('VAD-splitting requires mono samples')
+        raise ValueError("VAD-splitting requires mono samples")
 
     if audio_format.width != 2:
-        raise ValueError('VAD-splitting requires 16 bit samples')
+        raise ValueError("VAD-splitting requires 16 bit samples")
 
     if audio_format.rate not in [8000, 16000, 32000, 48000]:
         raise ValueError(
-            'VAD-splitting only supported for sample rates 8000, 16000, 32000, or 48000')
+            "VAD-splitting only supported for sample rates 8000, 16000, 32000, or 48000"
+        )
 
     if aggressiveness not in [0, 1, 2, 3]:
         raise ValueError(
-            'VAD-splitting aggressiveness mode has to be one of 0, 1, 2, or 3')
+            "VAD-splitting aggressiveness mode has to be one of 0, 1, 2, or 3"
+        )
 
     ring_buffer = collections.deque(maxlen=num_padding_frames)
     triggered = False
@@ -100,7 +113,8 @@ def split(audio_frames,
         frame_duration_ms = get_pcm_duration(len(frame), audio_format) * 1000
         if int(frame_duration_ms) not in [10, 20, 30]:
             raise ValueError(
-                'VAD-splitting only supported for frame durations 10, 20, or 30 ms')
+                "VAD-splitting only supported for frame durations 10, 20, or 30 ms"
+            )
         is_speech = vad.is_speech(frame, audio_format.rate)
         if not triggered:
             ring_buffer.append((frame, is_speech))
@@ -116,12 +130,12 @@ def split(audio_frames,
             num_unvoiced = len([f for f, speech in ring_buffer if not speech])
             if num_unvoiced > threshold * ring_buffer.maxlen:
                 triggered = False
-                yield b''.join(voiced_frames), \
-                      frame_duration_ms * max(0, frame_index - len(voiced_frames)), \
-                      frame_duration_ms * frame_index
+                yield b"".join(voiced_frames), frame_duration_ms * max(
+                    0, frame_index - len(voiced_frames)
+                ), frame_duration_ms * frame_index
                 ring_buffer.clear()
                 voiced_frames = []
     if len(voiced_frames) > 0:
-        yield b''.join(voiced_frames), \
-              frame_duration_ms * (frame_index - len(voiced_frames)), \
-              frame_duration_ms * (frame_index + 1)
+        yield b"".join(voiced_frames), frame_duration_ms * (
+            frame_index - len(voiced_frames)
+        ), frame_duration_ms * (frame_index + 1)

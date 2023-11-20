@@ -1,3 +1,3 @@
 from app.transcriber.transcribe import Transcriber
 
-Transcriber('techiaith/wav2vec2-xlsr-ft-cy', '22.06')
+Transcriber("techiaith/wav2vec2-xlsr-ft-en-cy", "23.03")

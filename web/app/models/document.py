@@ -26,12 +26,13 @@ class Document(Base):
     """
     Dogfen yn cardw trefn ar trawsgrifiadau
     """
-    __tablename__ = 'document'
+
+    __tablename__ = "document"
     id = Column(Integer, primary_key=True)
     sound_src = Column(Text, default="")
     uuid = Column(Text, default="")
     correction_index = Column(Integer, default=1)
-    transcripts = relationship('Transcript', lazy='select')
+    transcripts = relationship("Transcript", lazy="select")
     previous_transcript = {}
     next_transcript = {}
     corrections = []
@@ -46,9 +47,7 @@ class Document(Base):
             transcript.uuid = self.uuid
 
     def __str__(self):
-        return "{} {} {}".format(self.uuid,
-                                 len(self.transcripts),
-                                 self.sound_src)
+        return "{} {} {}".format(self.uuid, len(self.transcripts), self.sound_src)
 
     def save_to_disk(self):
         """
@@ -56,7 +55,7 @@ class Document(Base):
         """
         log.info("saving file %s", self.uuid)
         file_name = "data/originals/{}.json".format(self.uuid)
-        with open(file_name, 'wb') as filehandler:
+        with open(file_name, "wb") as filehandler:
             pickle.dump(self, filehandler)
 
     def check_export_ready(self):
@@ -95,14 +94,15 @@ def transcribe_to_srt(uid, transcripts, file_root):
         end_seconds = transcript.end_time
         start_delta = timedelta(seconds=start_seconds)
         end_delta = timedelta(seconds=end_seconds)
-        srt_segments.append(srt.Subtitle(i,
-                                         start=start_delta,
-                                         end=end_delta,
-                                         content=transcript.correction))
-        i = i+1
+        srt_segments.append(
+            srt.Subtitle(
+                i, start=start_delta, end=end_delta, content=transcript.correction
+            )
+        )
+        i = i + 1
     str_string = srt.compose(srt_segments)
     srt_file_path = "{}/{}.srt".format(file_root, uid)
-    with open(srt_file_path, 'w', encoding='utf-8') as srt_file:
+    with open(srt_file_path, "w", encoding="utf-8") as srt_file:
         srt_file.write(str_string)
 
     print("srt file of transcription saved to %s" % srt_file_path)
@@ -114,17 +114,20 @@ def transcribe_to_textgrid(uid, transcripts, wav_file_path):
     """
     textgrid_entries_list = []
     for transcript in transcripts:
-        textgrid_entry = (transcript.start_time,
-                          transcript.end_time, transcript.correction)
+        textgrid_entry = (
+            transcript.start_time,
+            transcript.end_time,
+            transcript.correction,
+        )
         textgrid_entries_list.append(textgrid_entry)
 
     utterance_tier = tgio.IntervalTier(
-        'utterance', textgrid_entries_list, 0, pairedWav=wav_file_path)
+        "utterance", textgrid_entries_list, 0, pairedWav=wav_file_path
+    )
     t_grid = tgio.Textgrid()
     t_grid.addTier(utterance_tier)
     textgrid_file_path = "data/{}.TextGrid".format(uid)
-    t_grid.save(textgrid_file_path, useShortForm=False,
-                outputFormat='textgrid')
+    t_grid.save(textgrid_file_path, useShortForm=False, outputFormat="textgrid")
 
     print("Textgrid of transcription saved to %s" % textgrid_file_path)
 
@@ -135,7 +138,7 @@ def load_from_disk(uid, dbsession):
     """
     log.info("loading file %s", uid)
     file_name = "data/originals/{}.json".format(uid)
-    with open(file_name, 'rb') as filehandler:
+    with open(file_name, "rb") as filehandler:
         doc = pickle.load(filehandler)
         log.info("%s", str(doc))
         ddoc = dbsession.query(Document).filter(Document.uuid == uid).first()
@@ -146,6 +149,6 @@ def seconds_from_hours(hms):
     """
     Nol y nifer o eiliodau o hh:mm:ss,ss
     """
-    a = hms.split(':')
+    a = hms.split(":")
     a[2] = a[2].replace(",", ".")
-    return ((float(a[0]) * 60 * 60) + (float(a[1]) * 60) + float(a[2]))*1000
+    return ((float(a[0]) * 60 * 60) + (float(a[1]) * 60) + float(a[2])) * 1000

@@ -20,7 +20,8 @@ class Correction(Base):
     """
     Cywiriad sy'n cynig rhan o dogfen llawn
     """
-    __tablename__ = 'correction'
+
+    __tablename__ = "correction"
     id = Column(Integer, primary_key=True)
     document_id = Column(Integer)
     uuid = Column(Text, default="")
