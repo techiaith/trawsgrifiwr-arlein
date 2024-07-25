@@ -21,7 +21,7 @@ transformers
 tqdm
 pyyaml
 torchaudio
-torch==2.2.0
+torch==2.0.1
 datasets
 librosa
 srt
